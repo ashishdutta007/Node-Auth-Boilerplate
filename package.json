@@ -1,0 +1,11 @@
+{
+  "name": "test-node-authentication",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "theokkeles",
+  "license": "ISC"
+}
