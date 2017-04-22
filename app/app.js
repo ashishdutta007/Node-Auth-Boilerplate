@@ -9,6 +9,12 @@ var app = express();
 
 console.log('Inside app.js');
 
+//configure express app settings table
+//set views dir path 
+app.set('views', './views');
+//set templating engine
+app.set('view engine','ejs');
+
 //Routing any request with /api to router logic
 app.use('/auth', authRoutes);
 
