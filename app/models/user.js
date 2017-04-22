@@ -4,6 +4,7 @@
 console.log('Inside user.js');
 
 var mongoose = require('mongoose');
+//import encryprtion lib for node
 var bcrypt = require('bcrypt-nodejs');
 
 //Dont have to create a connection to create a Schema
@@ -34,7 +35,7 @@ var userSchema = new mongoose.Schema({
 });
 
 
-//Instance methods of userSchema
+//---Instance methods of userSchema---
 
 //Genearte hash value of the password with appended salt value
 userSchema.methods.generateHash = function(password) {
