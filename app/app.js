@@ -1,34 +1,41 @@
-//app.js - main business logic for the application
-//bootstrap our entire application
-//can call it as a controller file for the node app
-
+//app.js - Bootstrap/Control our entire application
 console.log('Inside app.js');
 
 var express = require('express');
-//Main instance of express server created here
-//Export this instance to index.js
+//Main express instance for the app created here
+//Export this instance to server.js
 var app = express();
-
-//var authRoutes = require('./api-routes/routes.js');
-
-var configDb = require('../config/database.js');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var flash = require('connect-flash');
+//Load Db config file
+var configDb = require('../config/database.js');
 
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
+//Utility modules 
+var morgan = require('morgan'); //Log incoming requests
+var bodyParser = require('body-parser'); // Parse request bodies
+var session = require('express-session'); //Sessions
+var flash = require('connect-flash'); //Flash messages
+//var cookieParser = require('cookie-parser'); //Parse cookies
 
-app.use(cookieParser()); // read cookies (needed for auth)
-app.use(bodyParser()); // get information from html forms
+//Mounting recording/logging specific middleware on all request route paths
+app.use(morgan('dev')); //Automated logging of requests, responses and related data
+app.use(bodyParser.urlencoded({ extended: false })); // Get information from html forms
+//app.use(cookieParser()); // Read cookies (needed for auth)
 
-//required for passport
-app.use(session({ secret: 'ilovescotchscotchyscotchscotch' })); // session secret
+//Mounting passport specific middleware on all request route paths
+//----????-----
+app.use(session({
+    secret: 'ilovescotchscotchyscotchscotch',
+    resave: true,
+    saveUninitialized: true
+})); // session secret
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
+
+//Configure express application settings table
+app.set('views', './views'); //Set views dir path 
+app.set('view engine', 'ejs'); //Set templating engine
 
 //Connect to database
 mongoose.connect(configDb.url, function(error) {
@@ -39,29 +46,17 @@ mongoose.connect(configDb.url, function(error) {
     }
 });
 
-//automated logging of requests, responses and related data
-app.use(morgan('dev'));
-//configure express app settings table
-//set views dir path 
-app.set('views', './views');
-//set templating engine
-app.set('view engine', 'ejs');
-
-//app.use -- mounting a middleware with acc to routes(here middleware is router obj - light middleware)
-//Routing any request with /api to router logic
 
 
 require('../config/passport.js')(passport);
 
-console.log(passport);
+//console.log(passport);
 
 var authRoutes = require('./api-routes/routes.js')(passport);
-
 app.use('/auth', authRoutes);
 
 //Exporting the same express insatnce to listen on port
 module.exports = {
     app: app,
-    passport: passport,
     mongoose: mongoose
 };

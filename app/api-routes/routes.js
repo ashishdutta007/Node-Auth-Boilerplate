@@ -1,15 +1,10 @@
 var express = require('express');
 //Create express router object
 var router = express.Router();
-//var app = require('../app.js');
-var passport = require('../../config/passport.js');
 
-//For authenticate() get the passport object from config/passport.js(app.js-->passport.js-->routes.js)
-
-//module.exports = router;
 module.exports = function(passportConfig) {
-    //Logging route for all requests
-    //homepage
+
+    //Homepage
     router.get('/index', function(request, response, next) {
         request.on('error', function() {
             return console.log('ERROR occured', error);
@@ -22,7 +17,6 @@ module.exports = function(passportConfig) {
     });
 
     //Login page route
-    //Show login 
     router.get('/login', function(request, response) {
         request.on('error', function() {
             return console.log('ERROR occured', error);
@@ -32,8 +26,7 @@ module.exports = function(passportConfig) {
         });
         // render the page and pass in any flash data if it exists
         // flash data ????
-        //response.render('./login', { message: request.flash('loginFlashMessage')}); 
-        response.render('./login', { message: 'loginFlashMessage' });
+        response.render('./login', { message: request.flash('loginFlashMessage') });
         console.log('Inside login router');
     });
 
@@ -45,27 +38,25 @@ module.exports = function(passportConfig) {
         response.on('error', function() {
             return console.log('ERROR occured', error);
         });
-        //params -- page/template to be rendered & the data 
-        response.render('signup', { message: 'signup message' });
+        //Params -- [page/template ,data]
+        //Render the html using template and data 
+        response.render('signup', { message: request.flash('Signup Message') });
         console.log('Inside signup router');
     });
 
-
+    //Signup POST route
     router.post('/signup', passportConfig.authenticate('local-signup', {
         successRedirect: '/auth/login', // redirect to the secure profile section
-        failureRedirect: '/signup', // redirect back to the signup page if there is an error
+        failureRedirect: '/auth/signup', // redirect back to the signup page if there is an error
         failureFlash: true // allow flash messages
     }), function(request, response) {
-    		console.log('Inside post signup router');
-
-
+        console.log("Request.body :", request.body.email);
         request.on('error', function() {
             return console.log('ERROR occured', error);
         });
         response.on('error', function() {
             return console.log('ERROR occured', error);
         });
-
 
         console.log('Inside signup post router');
     });

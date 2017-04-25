@@ -1,3 +1,4 @@
+//Entry point to node application
 //Importing express server instance from app.js
 var app = require('./app/app.js').app;
 var port = process.env.PORT || 3000;
